@@ -196,34 +196,19 @@ app.delete("/api/owners/:id", (req, res) => {
         .then((file) => {
             const owner = JSON.parse(file);
             fs.unlink(`${__dirname}/data/owners/o${idOfOwner}.json`);
-
-            fs.readdir(`${__dirname}/data/pets`, "utf-8")
-                .then((files) => {
-                    const petsToDelete = [];
-                    files.forEach((file) => {
-                        // check if owner is specified owner
-                        fs.readFile(`${__dirname}/data/pets/${file}`).then(
-                            (contents) => {
-                                console.log(contents);
-                                const parsedContents = JSON.parse(contents);
-                                console.log(parsedContents.owner);
-                                console.log(idOfOwner);
-                                if ((parsedContents.owner = `o${idOfOwner}`)) {
-                                    petsToDelete.push(parsedContents);
-                                    fs.unlink(
-                                        `${__dirname}/data/pets/${parsedContents.id}.json`
-                                    );
-                                }
-                            }
-                        );
-                    });
-                    console.log(petsToDelete);
-                    return [owner, petsToDelete];
-                })
-                .then((result) =>
-                    res.status(200).send({ owner: result[0], pets: result[1] })
-                );
+            return fs.readdir(`${__dirname}/data/pets`, "utf-8");
         })
+        .then((files) => {
+            const petsToDelete = Promise.all(
+                files.map((file) => {
+                    return fs.readFile(`${__dirname}/data/pets/${file}`);
+                })
+            );
+            return [owner, petsToDelete];
+        })
+        .then((result) =>
+            res.status(200).send({ owner: result[0], pets: result[1] })
+        )
         .catch((err) => {
             res.status(400).send({
                 msg: "Bad request. No owner with the id",
@@ -234,3 +219,14 @@ app.delete("/api/owners/:id", (req, res) => {
 app.listen(9090, () => {
     console.log("Server is listening on port 9090");
 });
+
+// .then((contents) => {
+//   const parsedContents = JSON.parse(contents);
+//   console.log(parsedContents.owner);
+//   if (parsedContents.owner === `o${idOfOwner}`) {
+//       petsToDelete.push(parsedContents);
+//       fs.unlink(
+//           `${__dirname}/data/pets/${parsedContents.id}.json`
+//       );
+//   }
+// });
