@@ -94,7 +94,15 @@ app.post("/api/owners", (req, res) => {
       for (let i = 0; i < content.length; i++) {
         result.push(JSON.parse(content[i]));
       }
-      console.log(result);
+      let newId = Number(result[result.length-1].id.slice(1))
+      newId += 1
+      req.body.id = newIdç
+      if(Object.keys(req.body).includes('id') && Object.keys(req.body).includes('name') && Object.keys(req.body).includes('age')){
+        fs.writeFile(`${__dirname}/data/owners/o${newId}.json`,JSON.stringify(req.body, null, 2), 'utf8')
+        res.status(200).send({newOwner: req.body})
+      }else{
+        res.status(400).send({msg: 'request does not contain correct information'})
+      }
     });
 });
 })
