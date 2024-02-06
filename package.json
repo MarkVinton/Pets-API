@@ -1,0 +1,19 @@
+{
+  "name": "be-pets-and-owners",
+  "version": "1.0.0",
+  "description": "To get your tasks head to:  https://l2c.northcoders.com/courses/be/pets-and-owners",
+  "main": "express-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon listen.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
